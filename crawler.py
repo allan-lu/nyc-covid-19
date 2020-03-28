@@ -17,7 +17,7 @@ for key in file_dict:
         backup_path = "Backup CSVs/"
         df.to_csv(backup_path + backup_name)
 
-        prev_date = today - timedelta(days=4)
+        prev_date = today - timedelta(days=7)
         prev_backup = "covid_summ_" + str(prev_date) + ".csv"
         if os.path.exists(backup_path + prev_backup):
             os.remove(backup_path + prev_backup)
