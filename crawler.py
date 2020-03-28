@@ -1,4 +1,5 @@
-from datetime import date
+import os
+from datetime import date, timedelta
 from crawl import crawl_decide
 
 today = date.today()
@@ -13,5 +14,10 @@ for key in file_dict:
 
     if key == 'covid_cases.csv':
         backup_name = "covid_summ_" + str(today) + ".csv"
-        backup_path = "Daily CSVs/"
+        backup_path = "Backup CSVs/"
         df.to_csv(backup_path + backup_name)
+
+        prev_date = today - timedelta(days=4)
+        prev_backup = "covid_summ_" + str(prev_date) + ".csv"
+        if os.path.exists(backup_path + prev_backup):
+            os.remove(backup_path + prev_backup)
