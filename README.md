@@ -1,7 +1,7 @@
 # nyc-covid-19
 Scraping and Analyzing Coronavirus Data in NYC
 
-Data is scraped from PDF files on the NYC Department of Health's COVID-19 webpage:
+Data is scraped from PDF files on the NYC Department of Health's COVID-19 webpage:  
 Page: https://www1.nyc.gov/site/doh/covid/covid-19-providers.page
 
 PDFs:  
