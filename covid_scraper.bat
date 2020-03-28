@@ -1,7 +1,7 @@
-call "Scripts\activate.bat"
+call "<anaconda_directory>/Scripts/activate.bat"
 
 call conda activate ml_env
 
-"python.exe" "crawler.py"
+"<path_to>/python.exe" "<path_to>/crawler.py"
 
 pause
