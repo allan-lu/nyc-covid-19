@@ -17,11 +17,19 @@ def crawl_decide(url, file):
     df = pdf[0]
 
     if "hospitalizations" in url:
-        new_df = hosp_crawl(df, file)
+        new_df = hosp_crawl(df)
     elif "deaths" in url:
-        new_df = death_crawl(df, file)
+        new_df = death_crawl(df)
     else:
-        new_df = summary_crawl(df, file)
+        new_df = summary_crawl(df)
+
+    # clean up new data frame
+    for index, row in new_df.iterrows():
+        if row['Category'] == row['Variable']:
+            new_df.drop(index, inplace=True)
+        if row['Variable'] == 'Unknown':
+            new_df.drop(index, inplace=True)
+    new_df = new_df.reset_index(drop=True)
 
     # read in table created yesterday
     old_df = pd.read_csv(file, index_col=0)
@@ -32,7 +40,7 @@ def crawl_decide(url, file):
     return old_df.join(new_df[today])
 
 
-def summary_crawl(df, file):
+def summary_crawl(df):
     # clean up the columns
     today = date.today()
 
@@ -56,16 +64,10 @@ def summary_crawl(df, file):
         if row['Variable'] != 'Deaths':
             row['Category'] = category
 
-    for index, row in df.iterrows():
-        if row['Category'] == row['Variable']:
-            df.drop(index, inplace=True)
-
-    df = df.reset_index(drop=True)
-
     return df
 
 
-def hosp_crawl(df, file):
+def hosp_crawl(df):
     # clean up the columns
     today = date.today()
 
@@ -89,16 +91,10 @@ def hosp_crawl(df, file):
         if row['Variable'] != 'Total':
             row['Category'] = category
 
-    for index, row in df.iterrows():
-        if row['Category'] == row['Variable']:
-            df.drop(index, inplace=True)
-
-    df = df.reset_index(drop=True)
-
     return df
 
 
-def death_crawl(df, file):
+def death_crawl(df):
     # clean up the columns
     today = date.today()
 
@@ -117,7 +113,7 @@ def death_crawl(df, file):
             category = row['Variable']
         if row['Variable'] != 'Total':
             categories[index] = category
-        split_var = row['Variable'].split("- ")
+        split_var = row['Variable'].split("-  ")
         if len(split_var) > 1:
             df.loc[index, 'Variable'] = split_var[1]
 
@@ -126,12 +122,6 @@ def death_crawl(df, file):
     df = pd.melt(df, id_vars=['Category', 'Variable'],
                  value_vars=['Yes', 'No', "Pending", "Total"],
                  var_name='Underlying Conditions', value_name=today)
-
-    for index, row in df.iterrows():
-        if row['Category'] == row['Variable']:
-            df.drop(index, inplace=True)
-
-    df = df.reset_index(drop=True)
 
     return df
 
